@@ -232,6 +232,14 @@ pipeline {
                         git push https://${GIT_USERNAME}:${GIT_TOKEN}@${REPO_URL} ${env.TAG_NAME}
                     """
                 }
+                script {
+                    if (env.VERSION.contains('-')) {
+                        echo "Version contains hyphen meaning it's a detached hotfix version."
+                        currentBuild.result = 'ABORTED'
+                        error "It's a detached hotfix. No need to merge the tag into upper version. Aborting."
+                    }
+                }
+
             }
         }
 
