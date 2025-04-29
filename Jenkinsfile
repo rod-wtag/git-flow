@@ -181,18 +181,18 @@ pipeline {
                         detachedFix += 1
                         def newVersion = "${major}.${minor}.${patch}-${detachedFix}"
                         env.VERSION = newVersion
-                        env.TAG_NAME = "r${newVersion}"
                     } else {
                         patch += 1
                         def newVersion = "${major}.${minor}.${patch}"
                         env.VERSION = newVersion
-                        env.TAG_NAME = "r${newVersion}"
                     }
+
+                    env.TAG_NAME = "r${env.VERSION}"
 
                     echo "Bump version: ${env.VERSION}"
 
                     // Replace the version line
-                    def updatedContent = "version: ${newVersion}"
+                    def updatedContent = "version: ${env.VERSION}"
                     writeFile(file: versionFilePath, text: updatedContent)
                 }
             }
