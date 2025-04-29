@@ -108,12 +108,14 @@ pipeline {
                     // Parse version numbers using split
                     def versionStr = versionLine.split(':')[1].trim()
 
-                    echo "Version from main branch: ${env.VERSION}"
+                    echo "Version from main branch: ${versionStr}"
 
                     def parts = versionStr.split('-')
                     def mainVersion = parts[0]
                     def (major, minor, patch) = mainVersion.split('\\.').collect { it.toInteger() }
                     env.MAIN_MINOR = minor
+
+                    echo "Main branch minor: ${minor}"
                 }
             }
         }
