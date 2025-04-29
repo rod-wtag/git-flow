@@ -7,7 +7,7 @@ pipeline {
 
     environment {
         GIT_CREDENTIALS_ID = 'github-creds'
-        REPO_URL = 'github.com/rod-wtag/test.git'
+        REPO_URL = 'github.com/rod-wtag/git-flow.git'
         USER_NAME = 'rod-wtag'
         USER_EMAIL = 'roky.das@welldev.io'
     }
