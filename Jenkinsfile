@@ -156,8 +156,12 @@ pipeline {
                         error "version: line not found in properties file"
                     }
 
+                    echo "Version line: ${versionLine}"
+
                     // Parse version numbers using split
                     def versionStr = versionLine.split(':')[1].trim()
+
+                    echo "Version from main branch: ${versionStr}"
                     // If it is first detachedFIx, this will be 0 by incrementing
                     def detachedFix = -1
 
@@ -169,6 +173,9 @@ pipeline {
                     }
 
                     def (major, minor, patch) = mainVersion.split('\\.').collect { it.toInteger() }
+
+                    echo "Main branch version: ${major} . ${minor} . ${patch}"
+                    echo "Main branch detached fix: ${detachedFix}"
 
                     env.MAJOR = major
                     env.MINOR = minor
