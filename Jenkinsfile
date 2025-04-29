@@ -160,8 +160,6 @@ pipeline {
 
                     // Parse version numbers using split
                     def versionStr = versionLine.split(':')[1].trim()
-
-                    echo "Version from main branch: ${versionStr}"
                     // If it is first detachedFIx, this will be 0 by incrementing
                     def detachedFix = -1
 
@@ -174,15 +172,12 @@ pipeline {
 
                     def (major, minor, patch) = mainVersion.split('\\.').collect { it.toInteger() }
 
-                    echo "Main branch version: ${major} . ${minor} . ${patch}"
-                    echo "Main branch detached fix: ${detachedFix}"
-
                     env.MAJOR = major
                     env.MINOR = minor
                     
                     // Bump the patch version
                     // Check if the version is a detached fix version
-                    if (detachedFix > 0 || env.MAIN_MINOR - minor >= 3) {
+                    if (detachedFix > 0 || env.MAIN_MINOR.toInteger() - minor >= 3) {
                         detachedFix += 1
                         def newVersion = "${major}.${minor}.${patch}-${detachedFix}"
                         env.VERSION = newVersion
