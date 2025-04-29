@@ -143,6 +143,8 @@ pipeline {
                         git status
                     """
 
+                    echo "updating version"
+
                     // Working with fresh branch from previous stage
                     def versionFilePath = 'system/config/version.properties'
                     env.VERSION_FILE_PATH = versionFilePath
