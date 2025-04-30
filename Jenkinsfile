@@ -7,7 +7,7 @@ pipeline {
 
     environment {
         GIT_CREDENTIALS_ID = 'github-creds'
-        REPO_URL = 'github.com/rod-wtag/git-flow.git'
+        REPO_URL = 'github.com/rod-wtag/test.git'
         USER_NAME = 'rod-wtag'
         USER_EMAIL = 'roky.das@welldev.io'
     }
@@ -108,14 +108,12 @@ pipeline {
                     // Parse version numbers using split
                     def versionStr = versionLine.split(':')[1].trim()
 
-                    echo "Version from main branch: ${versionStr}"
+                    echo "Version from main branch: ${env.VERSION}"
 
                     def parts = versionStr.split('-')
                     def mainVersion = parts[0]
                     def (major, minor, patch) = mainVersion.split('\\.').collect { it.toInteger() }
                     env.MAIN_MINOR = minor
-
-                    echo "Main branch minor: ${minor}"
                 }
             }
         }
@@ -143,8 +141,6 @@ pipeline {
                         git status
                     """
 
-                    echo "updating version"
-
                     // Working with fresh branch from previous stage
                     def versionFilePath = 'system/config/version.properties'
                     env.VERSION_FILE_PATH = versionFilePath
@@ -155,8 +151,6 @@ pipeline {
                     if (!versionLine) {
                         error "version: line not found in properties file"
                     }
-
-                    echo "Version line: ${versionLine}"
 
                     // Parse version numbers using split
                     def versionStr = versionLine.split(':')[1].trim()
@@ -177,22 +171,22 @@ pipeline {
                     
                     // Bump the patch version
                     // Check if the version is a detached fix version
-                    if (detachedFix > 0 || env.MAIN_MINOR.toInteger() - minor >= 3) {
+                    if (detachedFix > 0 || env.MAIN_MINOR - minor >= 3) {
                         detachedFix += 1
                         def newVersion = "${major}.${minor}.${patch}-${detachedFix}"
                         env.VERSION = newVersion
+                        env.TAG_NAME = "r${newVersion}"
                     } else {
                         patch += 1
                         def newVersion = "${major}.${minor}.${patch}"
                         env.VERSION = newVersion
+                        env.TAG_NAME = "r${newVersion}"
                     }
-
-                    env.TAG_NAME = "r${env.VERSION}"
 
                     echo "Bump version: ${env.VERSION}"
 
                     // Replace the version line
-                    def updatedContent = "version: ${env.VERSION}"
+                    def updatedContent = "version: ${newVersion}"
                     writeFile(file: versionFilePath, text: updatedContent)
                 }
             }
@@ -232,14 +226,6 @@ pipeline {
                         git push https://${GIT_USERNAME}:${GIT_TOKEN}@${REPO_URL} ${env.TAG_NAME}
                     """
                 }
-                script {
-                    if (env.VERSION.contains('-')) {
-                        echo "Version contains hyphen meaning it's a detached hotfix version."
-                        currentBuild.result = 'ABORTED'
-                        error "It's a detached hotfix. No need to merge the tag into upper version. Aborting."
-                    }
-                }
-
             }
         }
 
