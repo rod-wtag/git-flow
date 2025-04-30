@@ -291,7 +291,7 @@ pipeline {
                                     git checkout --ours system/config/version.properties
                                     git add system/config/version.properties
                                     git commit -m 'Merged ${env.TAG_NAME} into ${branchName} - resolved version.properties conflict by keeping branch version.'
-                                    git push origin HEAD:${branchName}
+                                    git push origin HEAD:${branchName} -f
                                 """
                             } else {
                                 currentBuild.result = 'ABORTED'
