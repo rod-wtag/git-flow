@@ -213,7 +213,7 @@ pipeline {
                             git commit -m "bump version ${env.VERSION}" || echo "No changes to commit"
                             
                             # Push changes
-                            git push origin HEAD:${env.CURRENT_BRANCH}
+                            git push -f origin HEAD:${env.CURRENT_BRANCH}
                             
                             echo "Successfully pushed changes to ${env.CURRENT_BRANCH}"
                         """
